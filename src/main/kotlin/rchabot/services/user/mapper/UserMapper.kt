@@ -7,5 +7,7 @@ import rchabot.services.user.bo.UserBO
 @Mapper
 interface UserMapper {
 
-    fun toBO(bo: User): UserBO
+    fun toBO(model: User): UserBO
+
+    fun toModel(bo: UserBO): User
 }

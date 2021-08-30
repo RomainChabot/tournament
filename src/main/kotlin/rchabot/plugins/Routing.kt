@@ -7,8 +7,8 @@ import org.koin.ktor.ext.inject
 import rchabot.controller.user.UserController
 
 fun Application.configureRouting() {
-    install(Routing) {
-    }
+
+    install(Routing)
 
     val userController: UserController by inject()
 
@@ -16,10 +16,6 @@ fun Application.configureRouting() {
         get("/") {
             call.respondText("Hello World!")
         }
-        route("user") {
-            get("test") {
-                call.respond(userController.getUser())
-            }
-        }
+        userController.routeFrom(this);
     }
 }

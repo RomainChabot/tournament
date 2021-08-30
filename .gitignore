@@ -3,4 +3,4 @@ build/
 *.iml
 out/
 .idea/
-.txt
+notes.txt

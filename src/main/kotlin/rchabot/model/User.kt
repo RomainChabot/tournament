@@ -1,3 +1,5 @@
 package rchabot.model
 
-data class User(val username: String)
+import org.bson.types.ObjectId
+
+data class User(val _id: ObjectId?, val username: String)
