@@ -2,12 +2,10 @@ package rchabot.services.user.mapper
 
 import org.mapstruct.Mapper
 import rchabot.model.User
+import rchabot.services.common.mapper.ModelMapper
 import rchabot.services.user.bo.UserBO
 
 @Mapper
-interface UserMapper {
+interface UserMapper : ModelMapper<User, UserBO> {
 
-    fun toBO(model: User): UserBO
-
-    fun toModel(bo: UserBO): User
 }

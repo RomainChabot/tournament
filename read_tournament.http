@@ -1,0 +1,9 @@
+POST http://localhost:8181/api/tournament?name=tournament1
+
+<> 2021-08-30T220731.200.json
+
+###
+POST http://localhost:8181/tournament
+
+<> 2021-08-30T215054.200.json
+<> 2021-08-30T214934.200.json

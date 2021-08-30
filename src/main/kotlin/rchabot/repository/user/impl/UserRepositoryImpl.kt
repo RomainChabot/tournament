@@ -9,7 +9,6 @@ class UserRepositoryImpl(private val dataSource: MongoDBDataSource) : UserReposi
 
     override fun create(user: User): User {
         val collection = dataSource.database.getCollection<User>("user")
-        collection.insertOne(user).insertedId
         return user
     }
 }
