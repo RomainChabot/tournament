@@ -6,19 +6,19 @@ import rchabot.services.tournament.bo.TournamentBO
 
 interface TournamentService {
 
-    fun create(name: String): TournamentBO
+    suspend fun create(name: String): TournamentBO
 
-    fun read(tournamentId: ObjectId): TournamentBO?
+    suspend fun read(tournamentId: ObjectId): TournamentBO?
 
-    fun update(tournamentBO: TournamentBO): TournamentBO
+    suspend fun update(tournamentBO: TournamentBO): TournamentBO
 
-    fun delete(tournamentId: ObjectId)
+    suspend fun delete(tournamentId: ObjectId)
 
-    fun addPlayer(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO
+    suspend fun addPlayer(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO
 
-    fun updatePlayerPoints(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO
+    suspend fun updatePlayerPoints(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO
 
-    fun findPlayer(tournamentId: ObjectId, username: String): PlayerBO?
+    suspend fun findPlayer(tournamentId: ObjectId, username: String): PlayerBO?
 
-    fun deletePlayers(tournamentId: ObjectId): TournamentBO?
+    suspend fun deletePlayers(tournamentId: ObjectId): TournamentBO?
 }

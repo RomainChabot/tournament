@@ -15,40 +15,41 @@ import rchabot.services.player.bo.PlayerBO
 import rchabot.services.tournament.TournamentService
 import rchabot.services.tournament.bo.TournamentBO
 
+
 data class TournamentController(
     private val tournamentService: TournamentService,
     private val tournamentMapper: TournamentResourceMapper,
     private val playerMapper: PlayerResourceMapper,
 ) : Controller {
 
-    fun create(name: String): TournamentResource {
-        return tournamentMapper.toResource(tournamentService.create(name));
+    suspend fun create(name: String): TournamentResource {
+        return tournamentMapper.toResource(tournamentService.create(name))
     }
 
-    fun read(tournamentId: String): TournamentResource {
+    suspend fun read(tournamentId: String): TournamentResource {
         val result: TournamentBO = tournamentService.read(ObjectId(tournamentId)) ?: TournamentBO("")
         return tournamentMapper.toResource(result)
     }
 
-    fun delete(tournamentId: String): Unit {
+    suspend fun delete(tournamentId: String): Unit {
         tournamentService.delete(ObjectId(tournamentId))
     }
 
-    fun deletePlayers(tournamentId: String): TournamentResource {
+    suspend fun deletePlayers(tournamentId: String): TournamentResource {
         val result: TournamentBO = tournamentService.deletePlayers(ObjectId(tournamentId)) ?: TournamentBO("")
         return tournamentMapper.toResource(result)
     }
 
-    fun addPlayer(tournamentId: String, playerName: String): TournamentResource {
+    suspend fun addPlayer(tournamentId: String, playerName: String): TournamentResource {
         return tournamentMapper.toResource(
             tournamentService.addPlayer(
                 ObjectId(tournamentId),
                 PlayerBO(playerName, 0, null)
             )
-        );
+        )
     }
 
-    fun updatePlayerPoints(tournamentId: String, playerResource: PlayerResource): TournamentResource {
+    suspend fun updatePlayerPoints(tournamentId: String, playerResource: PlayerResource): TournamentResource {
         return tournamentMapper.toResource(
             tournamentService.updatePlayerPoints(
                 ObjectId(tournamentId),
@@ -57,7 +58,7 @@ data class TournamentController(
         )
     }
 
-    fun getPlayer(tournamentId: String, playerName: String): PlayerResource {
+    suspend fun getPlayer(tournamentId: String, playerName: String): PlayerResource {
         val result: PlayerBO = tournamentService.findPlayer(ObjectId(tournamentId), playerName) ?: PlayerBO("", 0, null)
         return playerMapper.toResource(result)
     }
@@ -81,30 +82,34 @@ data class TournamentController(
                 delete(tournamentId)
                 call.respond(HttpStatusCode.OK, """Tournament deleted""")
             }
-            post("{id}/players/add") {
-                val tournamentId = call.parameters.get("id").toString()
-                val playerName = call.request.queryParameters["playerName"]
-                if (playerName == null) {
-                    call.respond(HttpStatusCode.BadRequest, """Missing "playerName" query parameter""")
-                } else {
-                    call.respond(addPlayer(tournamentId, playerName))
+
+            route("{id}/players") {
+                post("") {
+                    val tournamentId = call.parameters.get("id").toString()
+                    val playerName = call.request.queryParameters["playerName"]
+                    if (playerName == null) {
+                        call.respond(HttpStatusCode.BadRequest, """Missing "playerName" query parameter""")
+                    } else {
+                        call.respond(addPlayer(tournamentId, playerName))
+                    }
+                }
+                post("{username}/score") {
+                    val tournamentId = call.parameters.get("id").toString()
+                    call.respond(updatePlayerPoints(tournamentId, call.receive<PlayerResource>()))
+
+                }
+                get("{username}") {
+                    val tournamentId = call.parameters.get("id").toString()
+                    val username = call.parameters.get("username").toString()
+                    call.respond(getPlayer(tournamentId, username))
+                }
+                delete("") {
+                    val tournamentId = call.parameters.get("id").toString()
+                    deletePlayers(tournamentId)
+                    call.respond(HttpStatusCode.OK, """Tournament players deleted""")
                 }
             }
-            post("{id}/players/score") {
-                val tournamentId = call.parameters.get("id").toString()
-                call.respond(updatePlayerPoints(tournamentId, call.receive<PlayerResource>()))
 
-            }
-            get("{id}/players/{username}") {
-                val tournamentId = call.parameters.get("id").toString()
-                val username = call.parameters.get("username").toString()
-                call.respond(getPlayer(tournamentId, username))
-            }
-            delete("{id}/players") {
-                val tournamentId = call.parameters.get("id").toString()
-                deletePlayers(tournamentId)
-                call.respond(HttpStatusCode.OK, """Tournament players deleted""")
-            }
         }
     }
 

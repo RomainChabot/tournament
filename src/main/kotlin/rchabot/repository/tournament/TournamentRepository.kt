@@ -6,16 +6,16 @@ import rchabot.model.Tournament
 
 interface TournamentRepository {
 
-    fun create(tournament: Tournament): Tournament
+    suspend fun create(tournament: Tournament): Tournament
 
-    fun read(id: ObjectId): Tournament?
+    suspend fun read(id: ObjectId): Tournament?
 
-    fun update(tournament: Tournament): Tournament
+    suspend fun update(tournament: Tournament): Tournament
 
-    fun delete(id: ObjectId): Unit
+    suspend fun delete(id: ObjectId)
 
-    fun addPlayer(tournamentId: ObjectId, player: Player): Unit
+    suspend fun addPlayer(tournamentId: ObjectId, player: Player)
 
-    fun updatePlayer(tournamentId: ObjectId, player: Player): Unit
+    suspend fun updatePlayer(tournamentId: ObjectId, player: Player)
 
 }

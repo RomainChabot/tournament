@@ -16,32 +16,32 @@ class TournamentServiceImpl(
     private val playerMapper: PlayerMapper,
 ) : TournamentService {
 
-    override fun create(name: String): TournamentBO {
+    override suspend fun create(name: String): TournamentBO {
         return tournamentMapper.toBO(tournamentRepository.create(Tournament(name = name)))
     }
 
-    override fun read(tournamentId: ObjectId): TournamentBO {
+    override suspend fun read(tournamentId: ObjectId): TournamentBO {
         val tournament = tournamentRepository.read(tournamentId)
             ?: throw ModelNotFoundException("No tournament found with id ${tournamentId}")
-        return tournamentMapper.toBO(tournament);
+        return tournamentMapper.toBO(tournament)
     }
 
-    override fun update(tournamentBO: TournamentBO): TournamentBO {
+    override suspend fun update(tournamentBO: TournamentBO): TournamentBO {
         return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournamentBO)))
     }
 
-    override fun delete(tournamentId: ObjectId) {
+    override suspend fun delete(tournamentId: ObjectId) {
         tournamentRepository.delete(tournamentId)
     }
 
-    override fun addPlayer(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
+    override suspend fun addPlayer(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
         tournamentRepository.addPlayer(tournamentId, playerMapper.toModel(playerBO))
         return this.read(tournamentId)
     }
 
-    override fun updatePlayerPoints(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
+    override suspend fun updatePlayerPoints(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
         // TODO Handle player not found
-        val tournament = this.read(tournamentId);
+        val tournament = this.read(tournamentId)
         val player = tournament.players.find { it.username == playerBO.username }!!
         player.score = playerBO.score
         updatePLayersRanking(tournament)
@@ -55,13 +55,13 @@ class TournamentServiceImpl(
         tournament.players = updated
     }
 
-    override fun findPlayer(tournamentId: ObjectId, username: String): PlayerBO? {
-        val tournament = this.read(tournamentId);
+    override suspend fun findPlayer(tournamentId: ObjectId, username: String): PlayerBO? {
+        val tournament = this.read(tournamentId)
         return tournament.players.find { it.username == username }
     }
 
-    override fun deletePlayers(tournamentId: ObjectId): TournamentBO {
-        val tournament = this.read(tournamentId);
+    override suspend fun deletePlayers(tournamentId: ObjectId): TournamentBO {
+        val tournament = this.read(tournamentId)
         tournament.players = listOf()
         return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament)))
     }
