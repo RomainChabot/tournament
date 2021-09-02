@@ -10,6 +10,6 @@ interface ResourceMapper<I, O> {
 
     fun toResource(bo: I): O
 
-    fun toBO(bo: O): I
+    fun toBO(resource: O): I
 
 }

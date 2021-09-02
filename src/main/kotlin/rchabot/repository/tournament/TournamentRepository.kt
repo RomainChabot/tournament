@@ -12,6 +12,8 @@ interface TournamentRepository {
 
     fun update(tournament: Tournament): Tournament
 
+    fun delete(id: ObjectId): Unit
+
     fun addPlayer(tournamentId: ObjectId, player: Player): Unit
 
     fun updatePlayer(tournamentId: ObjectId, player: Player): Unit

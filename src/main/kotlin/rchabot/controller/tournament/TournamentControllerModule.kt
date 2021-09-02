@@ -7,6 +7,6 @@ import rchabot.controller.tournament.mapper.TournamentResourceMapperImpl
 
 
 val tournamentControllerModule = module {
-    single<TournamentController> { TournamentController(get(), get()) }
+    single<TournamentController> { TournamentController(get(), get(), get()) }
     single<TournamentResourceMapper> { TournamentResourceMapperImpl() }
 }

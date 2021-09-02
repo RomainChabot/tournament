@@ -30,17 +30,39 @@ class TournamentServiceImpl(
         return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournamentBO)))
     }
 
+    override fun delete(tournamentId: ObjectId) {
+        tournamentRepository.delete(tournamentId)
+    }
+
     override fun addPlayer(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
         tournamentRepository.addPlayer(tournamentId, playerMapper.toModel(playerBO))
         return this.read(tournamentId)
     }
 
     override fun updatePlayerPoints(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
-        TODO("Not yet implemented")
+        // TODO Handle player not found
+        val tournament = this.read(tournamentId);
+        val player = tournament.players.find { it.username == playerBO.username }!!
+        player.score = playerBO.score
+        updatePLayersRanking(tournament)
+        return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament)))
+    }
+
+    private fun updatePLayersRanking(tournament: TournamentBO) {
+        val updated = tournament.players.sortedBy(PlayerBO::score)
+        val playersByScore = tournament.players.groupBy(PlayerBO::score).toSortedMap(compareByDescending { it })
+        playersByScore.values.forEachIndexed { index, list -> list.forEach { it.ranking = index + 1 } }
+        tournament.players = updated
     }
 
     override fun findPlayer(tournamentId: ObjectId, username: String): PlayerBO? {
         val tournament = this.read(tournamentId);
         return tournament.players.find { it.username == username }
+    }
+
+    override fun deletePlayers(tournamentId: ObjectId): TournamentBO {
+        val tournament = this.read(tournamentId);
+        tournament.players = listOf()
+        return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament)))
     }
 }

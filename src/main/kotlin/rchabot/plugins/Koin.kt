@@ -25,7 +25,8 @@ fun Application.configureKoin() {
     )
 
     val playerModules = listOf<Module>(
-        playerServiceModule
+        playerServiceModule,
+        playerControllerModule
     )
 
     install(org.koin.ktor.ext.Koin) {

@@ -9,6 +9,8 @@ import rchabot.repository.tournament.TournamentRepository
 
 class TournamentRepositoryImpl(private val dataSource: MongoDBDataSource) : TournamentRepository {
 
+    // TODO Better handling of collection
+
     override fun create(tournament: Tournament): Tournament {
         val collection = dataSource.database.getCollection<Tournament>("tournament")
         collection.insertOne(tournament);
@@ -27,6 +29,11 @@ class TournamentRepositoryImpl(private val dataSource: MongoDBDataSource) : Tour
             set(Tournament::players setTo tournament.players)
         )
         return tournament
+    }
+
+    override fun delete(id: ObjectId) {
+        val collection = dataSource.database.getCollection<Tournament>("tournament")
+        collection.deleteOne(Tournament::_id eq id)
     }
 
     override fun addPlayer(tournamentId: ObjectId, player: Player): Unit {

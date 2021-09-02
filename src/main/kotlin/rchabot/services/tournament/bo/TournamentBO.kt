@@ -1,8 +1,14 @@
 package rchabot.services.tournament.bo
 
+import org.bson.types.ObjectId
+import rchabot.common.annotation.Default
 import rchabot.services.player.bo.PlayerBO
 
-data class TournamentBO constructor(
+data class TournamentBO @Default constructor(
+    val _id: ObjectId?,
     val name: String,
-    val players: List<PlayerBO> = mutableListOf()
-)
+    var players: List<PlayerBO> = listOf<PlayerBO>()
+) {
+    constructor(name: String) : this(_id = null, name = name)
+
+}
