@@ -13,7 +13,7 @@ operator fun ApplicationConfig.get(key: String) = this.propertyOrNull(key)?.getS
 
 fun Application.module() {
 
-    configureKoin()
+    configureKoin(environment.config)
     configureRouting()
     configureSerialization()
     configureStatusPages()

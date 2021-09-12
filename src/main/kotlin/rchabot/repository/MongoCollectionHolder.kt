@@ -1,5 +1,7 @@
 package rchabot.repository
 
+import io.ktor.application.*
+import io.ktor.config.*
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.CoroutineClient
 import org.litote.kmongo.coroutine.coroutine
@@ -13,11 +15,11 @@ class MongoCollectionHolder(client: CoroutineClient) {
 
 }
 
-val mongoDBModule = module {
+fun Application.mongoDBModule(applicationConfig: ApplicationConfig) = module {
     single<rchabot.repository.MongoCollectionHolder> {
         MongoCollectionHolder(
             KMongo.createClient(
-                "mongodb://admin:admin@localhost:27017"
+                applicationConfig.property("ktor.mongodb.url").getString()
             ).coroutine
         )
     }
