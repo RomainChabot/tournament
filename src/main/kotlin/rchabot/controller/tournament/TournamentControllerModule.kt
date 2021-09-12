@@ -1,7 +1,6 @@
-package rchabot.modules
+package rchabot.controller.tournament
 
 import org.koin.dsl.module
-import rchabot.controller.tournament.TournamentController
 import rchabot.controller.tournament.mapper.TournamentResourceMapper
 import rchabot.controller.tournament.mapper.TournamentResourceMapperImpl
 

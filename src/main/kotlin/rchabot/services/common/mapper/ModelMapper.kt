@@ -9,5 +9,7 @@ package rchabot.services.common.mapper
 interface ModelMapper<I, O> {
 
     fun toBO(model: I): O
+
     fun toModel(bo: O): I
+
 }

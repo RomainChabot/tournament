@@ -8,7 +8,9 @@ interface TournamentRepository {
 
     suspend fun create(tournament: Tournament): Tournament
 
-    suspend fun read(id: ObjectId): Tournament?
+    suspend fun findById(id: ObjectId): Tournament
+
+    suspend fun existsByName(name: String): Boolean
 
     suspend fun update(tournament: Tournament): Tournament
 

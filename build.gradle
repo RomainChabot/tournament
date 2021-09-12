@@ -21,6 +21,8 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:$logback_version"
     implementation "org.mapstruct:mapstruct:$mapstruct_version"
     implementation "org.litote.kmongo:kmongo-coroutine-native:$kmongo_version"
+    implementation "dev.forkhandles:forkhandles-bom:$result4k_version"
+    implementation "dev.forkhandles:result4k:$result4k_version"
 
     kapt "org.mapstruct:mapstruct-processor:$mapstruct_version"
 

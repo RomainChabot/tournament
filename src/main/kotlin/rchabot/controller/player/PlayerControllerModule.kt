@@ -1,4 +1,4 @@
-package rchabot.modules
+package rchabot.controller.player
 
 import org.koin.dsl.module
 import rchabot.controller.player.mapper.PlayerResourceMapper

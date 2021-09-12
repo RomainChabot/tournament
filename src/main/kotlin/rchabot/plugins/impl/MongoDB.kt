@@ -5,7 +5,7 @@ import io.ktor.util.*
 
 class MongoDB(configuration: Configuration) {
 
-    // TODO Try some impl
+    // TODO Try some Ktor plugins impl
 
     val url = configuration.url // Copies a snapshot of the mutable config into an immutable property.
 

@@ -5,16 +5,18 @@ import io.ktor.config.*
 import rchabot.plugins.configureKoin
 import rchabot.plugins.configureRouting
 import rchabot.plugins.configureSerialization
+import rchabot.plugins.configureStatusPages
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 operator fun ApplicationConfig.get(key: String) = this.propertyOrNull(key)?.getString()
 
-fun Application.module(testing: Boolean = false) {
+fun Application.module() {
 
     configureKoin()
     configureRouting()
     configureSerialization()
+    configureStatusPages()
 
 }
 

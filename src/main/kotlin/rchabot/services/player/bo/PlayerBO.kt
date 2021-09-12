@@ -1,4 +1,3 @@
 package rchabot.services.player.bo
 
-data class PlayerBO(val username: String, var score: Int = 0, var ranking: Int?) {
-}
+data class PlayerBO(val playerName: String, var score: Int = 0, var ranking: Int?)

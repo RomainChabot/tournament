@@ -1,4 +1,7 @@
 package rchabot.controller.player.resource
 
-class PlayerResource(val username: String, val score: Int = 0, val ranking: Int?) {
+import rchabot.common.annotation.Default
+
+data class PlayerResource @Default constructor(val playerName: String, val score: Int = 0, val ranking: Int?) {
+    constructor(playerName: String, score: Int) : this(playerName = playerName, score = score, ranking = null)
 }
