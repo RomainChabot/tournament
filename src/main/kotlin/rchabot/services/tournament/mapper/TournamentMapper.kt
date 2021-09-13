@@ -6,6 +6,4 @@ import rchabot.services.common.mapper.ModelMapper
 import rchabot.services.tournament.bo.TournamentBO
 
 @Mapper
-interface TournamentMapper : ModelMapper<Tournament, TournamentBO> {
-
-}
+interface TournamentMapper : ModelMapper<Tournament, TournamentBO>

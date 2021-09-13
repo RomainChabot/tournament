@@ -36,20 +36,21 @@ class TournamentServiceImpl(
         tournamentRepository.delete(tournamentId)
     }
 
-    override suspend fun addPlayer(tournamentId: ObjectId, playerBO: PlayerBO): Result4k<TournamentBO, Error> {
+    override suspend fun registerPlayer(tournamentId: ObjectId, playerBO: PlayerBO): Result4k<TournamentBO, Error> {
         val tournament = this.findById(tournamentId)
-        if (tournament.playerExists(playerBO.playerName)) {
+        if (tournament.existsPlayer(playerBO.playerName)) {
             return Failure(Error("Player ${playerBO.playerName} is already registered"))
         }
-        tournamentRepository.addPlayer(tournamentId, playerMapper.toModel(playerBO))
-        return Success(this.findById(tournamentId))
+        tournamentRepository.registerPlayer(tournamentId, playerMapper.toModel(playerBO))
+        return Success(this.updatePlayerScore(tournamentId, playerBO))
     }
 
-    override suspend fun updatePlayerPoints(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
+    override suspend fun updatePlayerScore(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
         val tournament = this.findById(tournamentId)
         tournament.findPlayer(playerBO.playerName)?.let {
             it.score = playerBO.score
             updatePlayersRanking(tournament)
+            // TODO Try to create mapper infix fun to write tournamentMapper around { tournamentRepository::update }
             return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament)))
         } ?: throw NotFoundException("Player ${playerBO.playerName} is not registered to tournament $tournamentId")
     }
@@ -67,9 +68,9 @@ class TournamentServiceImpl(
             ?: throw NotFoundException("Player $playerName is not registered to tournament $tournamentId")
     }
 
-    override suspend fun deletePlayers(tournamentId: ObjectId): Result4k<TournamentBO, Error> {
+    override suspend fun deletePlayers(tournamentId: ObjectId): TournamentBO {
         val tournament = this.findById(tournamentId)
         tournament.players = listOf()
-        return Success(tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament))))
+        return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament)))
     }
 }

@@ -16,7 +16,7 @@ interface TournamentRepository {
 
     suspend fun delete(id: ObjectId)
 
-    suspend fun addPlayer(tournamentId: ObjectId, player: Player)
+    suspend fun registerPlayer(tournamentId: ObjectId, player: Player)
 
     suspend fun updatePlayer(tournamentId: ObjectId, player: Player)
 

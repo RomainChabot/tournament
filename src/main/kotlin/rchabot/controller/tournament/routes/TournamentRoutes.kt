@@ -1,4 +1,4 @@
-package rchabot.routes.tournament
+package rchabot.controller.tournament.routes
 
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Success
@@ -88,8 +88,7 @@ fun Application.tournamentRoutes(parent: Route) {
     fun Route.deleteTournamentPlayers() {
         delete("") {
             val tournamentId = call.parameters["id"].toString()
-            tournamentController.deletePlayers(tournamentId)
-            call.respond(HttpStatusCode.OK, """Tournament players deleted""")
+            call.respond(tournamentController.deletePlayers(tournamentId))
         }
     }
 

@@ -2,7 +2,7 @@ package rchabot.plugins
 
 import io.ktor.application.*
 import io.ktor.routing.*
-import rchabot.routes.tournament.tournamentRoutes
+import rchabot.controller.tournament.routes.tournamentRoutes
 
 fun Application.configureRouting() {
 

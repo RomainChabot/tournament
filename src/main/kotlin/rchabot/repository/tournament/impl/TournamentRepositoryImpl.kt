@@ -36,7 +36,7 @@ class TournamentRepositoryImpl(private val collection: CoroutineCollection<Tourn
         collection.deleteOne(Tournament::_id eq id)
     }
 
-    override suspend fun addPlayer(tournamentId: ObjectId, player: Player) {
+    override suspend fun registerPlayer(tournamentId: ObjectId, player: Player) {
         collection.updateOne(
             Tournament::_id eq tournamentId,
             push(Tournament::players, player)

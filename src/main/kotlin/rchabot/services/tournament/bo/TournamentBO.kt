@@ -14,5 +14,5 @@ data class TournamentBO @Default constructor(
     fun findPlayer(playerName: String): PlayerBO? =
         players.find { it.playerName == playerName }
 
-    fun playerExists(playerName: String): Boolean = findPlayer(playerName) != null
+    fun existsPlayer(playerName: String): Boolean = findPlayer(playerName) != null
 }

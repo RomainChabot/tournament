@@ -31,12 +31,12 @@ data class TournamentController(
         tournamentService.delete(ObjectId(tournamentId))
     }
 
-    suspend fun deletePlayers(tournamentId: String): Result4k<TournamentResource, Error> {
-        return tournamentService.deletePlayers(ObjectId(tournamentId)).map(tournamentMapper::toResource)
+    suspend fun deletePlayers(tournamentId: String): TournamentResource {
+        return tournamentMapper.toResource(tournamentService.deletePlayers(ObjectId(tournamentId)))
     }
 
     suspend fun addPlayer(tournamentId: String, playerName: String): Result4k<TournamentResource, Error> {
-        return tournamentService.addPlayer(
+        return tournamentService.registerPlayer(
             ObjectId(tournamentId),
             PlayerBO(playerName, 0, null)
         ).map(tournamentMapper::toResource)
@@ -48,7 +48,7 @@ data class TournamentController(
         playerResource: PlayerResource
     ): TournamentResource {
         return tournamentMapper.toResource(
-            tournamentService.updatePlayerPoints(
+            tournamentService.updatePlayerScore(
                 ObjectId(tournamentId),
                 playerMapper.toBO(playerResource)
             )
