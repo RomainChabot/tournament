@@ -1,4 +1,4 @@
-package rchabot.repository
+package rchabot.dao
 
 import io.ktor.application.*
 import io.ktor.config.*
@@ -16,7 +16,7 @@ class MongoCollectionHolder(client: CoroutineClient) {
 }
 
 fun Application.mongoDBModule(applicationConfig: ApplicationConfig) = module {
-    single<rchabot.repository.MongoCollectionHolder> {
+    single<rchabot.dao.MongoCollectionHolder> {
         MongoCollectionHolder(
             KMongo.createClient(
                 applicationConfig.property("ktor.mongodb.url").getString()

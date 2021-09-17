@@ -1,4 +1,4 @@
-package rchabot.repository.tournament
+package rchabot.dao.tournament
 
 import org.bson.types.ObjectId
 import rchabot.model.Player

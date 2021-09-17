@@ -13,3 +13,11 @@ interface ResourceMapper<I, O> {
     fun toBO(resource: O): I
 
 }
+
+suspend infix fun <I, O> ResourceMapper<I, O>.mapResource(block: suspend () -> I): O {
+    return toResource(block())
+}
+
+suspend infix fun <I, O> ResourceMapper<I, O>.mapBO(block: suspend () -> O): I {
+    return toBO(block())
+}

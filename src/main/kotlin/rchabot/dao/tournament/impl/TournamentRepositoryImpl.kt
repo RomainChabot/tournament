@@ -1,12 +1,12 @@
-package rchabot.repository.tournament.impl
+package rchabot.dao.tournament.impl
 
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
 import rchabot.common.exception.NotFoundException
+import rchabot.dao.tournament.TournamentRepository
 import rchabot.model.Player
 import rchabot.model.Tournament
-import rchabot.repository.tournament.TournamentRepository
 
 class TournamentRepositoryImpl(private val collection: CoroutineCollection<Tournament>) : TournamentRepository {
 

@@ -17,9 +17,9 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import rchabot.common.exception.NotFoundException
+import rchabot.dao.tournament.TournamentRepository
 import rchabot.model.Player
 import rchabot.model.Tournament
-import rchabot.repository.tournament.TournamentRepository
 import rchabot.services.player.bo.PlayerBO
 import rchabot.services.player.mapper.PlayerMapper
 import rchabot.services.tournament.bo.TournamentBO
@@ -129,7 +129,7 @@ class TournamentServiceImplTest {
             coJustRun { tournamentRepository.delete(tournamentId) }
 
             // Act
-            val result = service.delete(tournamentId)
+            service.delete(tournamentId)
 
             // Assert
             coVerify { tournamentRepository.delete(tournamentId) }

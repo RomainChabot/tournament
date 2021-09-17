@@ -5,10 +5,10 @@ import io.ktor.config.*
 import org.koin.core.module.Module
 import rchabot.controller.player.playerControllerModule
 import rchabot.controller.tournament.tournamentControllerModule
+import rchabot.dao.mongoDBModule
+import rchabot.dao.tournament.tournamentRepositoryModule
 import rchabot.modules.playerServiceModule
 import rchabot.modules.tournamentServiceModule
-import rchabot.repository.mongoDBModule
-import rchabot.repository.tournament.tournamentRepositoryModule
 
 
 fun Application.configureKoin(applicationConfig: ApplicationConfig) {

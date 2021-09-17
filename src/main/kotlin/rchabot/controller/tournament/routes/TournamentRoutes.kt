@@ -21,7 +21,7 @@ fun Application.tournamentRoutes(parent: Route) {
             call.request.queryParameters["name"]?.let {
                 when (val result = tournamentController.create(it)) {
                     is Failure -> call.respond(HttpStatusCode.OK, result.reason.message!!)
-                    is Success -> call.respond(result.get())
+                    is Success -> call.respond(HttpStatusCode.Created, result.get())
                 }
             } ?: call.respond(HttpStatusCode.BadRequest, """"name" query parameter is missing""")
         }
@@ -67,12 +67,16 @@ fun Application.tournamentRoutes(parent: Route) {
             val tournamentId = call.parameters["id"].toString()
             val playerName = call.parameters["playerName"].toString()
             call.request.queryParameters["score"]?.let {
-                call.respond(
-                    tournamentController.updatePlayerPoints(
-                        tournamentId,
-                        PlayerResource(playerName = playerName, score = it.toInt())
+                if (it.matches(Regex("""\d+"""))) {
+                    call.respond(
+                        tournamentController.updatePlayerPoints(
+                            tournamentId,
+                            PlayerResource(playerName = playerName, score = it.toInt())
+                        )
                     )
-                )
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, """"score" query parameter is not an integer""")
+                }
             }
         }
     }

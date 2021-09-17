@@ -6,8 +6,10 @@ import dev.forkhandles.result4k.Success
 import dev.forkhandles.result4k.map
 import org.bson.types.ObjectId
 import rchabot.common.exception.NotFoundException
+import rchabot.dao.tournament.TournamentRepository
 import rchabot.model.Tournament
-import rchabot.repository.tournament.TournamentRepository
+import rchabot.services.common.mapper.mapAround
+import rchabot.services.common.mapper.mapBO
 import rchabot.services.player.bo.PlayerBO
 import rchabot.services.player.mapper.PlayerMapper
 import rchabot.services.tournament.TournamentService
@@ -29,7 +31,9 @@ class TournamentServiceImpl(
     }
 
     override suspend fun findById(tournamentId: ObjectId): TournamentBO {
-        return tournamentMapper.toBO(tournamentRepository.findById(tournamentId))
+        return tournamentMapper mapBO {
+            tournamentRepository.findById(tournamentId)
+        }
     }
 
     override suspend fun delete(tournamentId: ObjectId) {
@@ -50,8 +54,7 @@ class TournamentServiceImpl(
         tournament.findPlayer(playerBO.playerName)?.let {
             it.score = playerBO.score
             updatePlayersRanking(tournament)
-            // TODO Try to create mapper infix fun to write tournamentMapper around { tournamentRepository::update }
-            return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament)))
+            return tournamentMapper.mapAround(tournamentRepository::update, tournament)
         } ?: throw NotFoundException("Player ${playerBO.playerName} is not registered to tournament $tournamentId")
     }
 
@@ -71,6 +74,6 @@ class TournamentServiceImpl(
     override suspend fun deletePlayers(tournamentId: ObjectId): TournamentBO {
         val tournament = this.findById(tournamentId)
         tournament.players = listOf()
-        return tournamentMapper.toBO(tournamentRepository.update(tournamentMapper.toModel(tournament)))
+        return tournamentMapper.mapAround(tournamentRepository::update, tournament)
     }
 }
