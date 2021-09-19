@@ -16,9 +16,9 @@ interface TournamentService {
 
     suspend fun delete(tournamentId: ObjectId)
 
-    suspend fun registerPlayer(tournamentId: ObjectId, playerBO: PlayerBO): Result4k<TournamentBO, Error>
+    suspend fun registerPlayer(tournamentId: ObjectId, player: PlayerBO): Result4k<TournamentBO, Error>
 
-    suspend fun updatePlayerScore(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO
+    suspend fun updatePlayerScore(tournamentId: ObjectId, player: PlayerBO): TournamentBO
 
     suspend fun findPlayer(tournamentId: ObjectId, playerName: String): PlayerBO
 

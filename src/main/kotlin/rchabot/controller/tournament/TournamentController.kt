@@ -47,7 +47,6 @@ data class TournamentController(
             ObjectId(tournamentId),
             PlayerBO(playerName, 0, null)
         ).map(tournamentMapper::toResource)
-
     }
 
     suspend fun updatePlayerPoints(

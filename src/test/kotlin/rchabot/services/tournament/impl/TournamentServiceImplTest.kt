@@ -51,6 +51,55 @@ class TournamentServiceImplTest {
     }
 
     @Nested
+    inner class FindAll {
+
+        @Test
+        fun `should return all tournaments`() = runBlocking {
+
+            // Arrange
+            val tournament1 = Tournament("tournament1")
+            val tournament2 = Tournament("tournament2")
+
+            val tournamentBO1 = TournamentBO("tournament1")
+            val tournamentBO2 = TournamentBO("tournament2")
+
+            // Mock
+            coEvery { tournamentRepository.findAll() } returns listOf(tournament1, tournament2)
+            every { tournamentMapper.toBO(tournament1) } returns tournamentBO1
+            every { tournamentMapper.toBO(tournament2) } returns tournamentBO2
+
+            // Act
+            val result = service.findAll()
+
+            // Assert
+            assertEquals(listOf(tournamentBO1, tournamentBO2), result)
+
+        }
+
+        @Test
+        fun `should return succes when tournament with name doesn't already exists`() = runBlocking {
+
+            // Arrange
+            val name = "data"
+            val createdTournament = Tournament(_id = ObjectId(), name = name)
+            val createdTournamentBO = TournamentBO(name = name)
+
+            // Mock
+            coEvery { tournamentRepository.existsByName(name) } returns false
+            coEvery { tournamentRepository.create(Tournament(name = name)) } returns createdTournament
+            coEvery { tournamentMapper.toBO(createdTournament) } returns createdTournamentBO
+
+            // Act
+            val result = service.create(name)
+
+            // Assert
+            assertTrue { result is Success }
+            assertSame(createdTournamentBO, result.get())
+
+        }
+    }
+
+    @Nested
     inner class Create {
 
         @Test

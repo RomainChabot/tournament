@@ -44,22 +44,22 @@ class TournamentServiceImpl(
         tournamentRepository.delete(tournamentId)
     }
 
-    override suspend fun registerPlayer(tournamentId: ObjectId, playerBO: PlayerBO): Result4k<TournamentBO, Error> {
+    override suspend fun registerPlayer(tournamentId: ObjectId, player: PlayerBO): Result4k<TournamentBO, Error> {
         val tournament = this.findById(tournamentId)
-        if (tournament.existsPlayer(playerBO.playerName)) {
-            return Failure(Error("Player ${playerBO.playerName} is already registered"))
+        if (tournament.existsPlayer(player.playerName)) {
+            return Failure(Error("Player ${player.playerName} is already registered"))
         }
-        tournamentRepository.registerPlayer(tournamentId, playerMapper.toModel(playerBO))
-        return Success(this.updatePlayerScore(tournamentId, playerBO))
+        tournamentRepository.registerPlayer(tournamentId, playerMapper.toModel(player))
+        return Success(this.updatePlayerScore(tournamentId, player))
     }
 
-    override suspend fun updatePlayerScore(tournamentId: ObjectId, playerBO: PlayerBO): TournamentBO {
+    override suspend fun updatePlayerScore(tournamentId: ObjectId, player: PlayerBO): TournamentBO {
         val tournament = this.findById(tournamentId)
-        tournament.findPlayer(playerBO.playerName)?.let {
-            it.score = playerBO.score
+        tournament.findPlayer(player.playerName)?.let {
+            it.score = player.score
             updatePlayersRanking(tournament)
             return tournamentMapper.mapAround(tournamentRepository::update, tournament)
-        } ?: throw NotFoundException("Player ${playerBO.playerName} is not registered to tournament $tournamentId")
+        } ?: throw NotFoundException("Player ${player.playerName} is not registered to tournament $tournamentId")
     }
 
     private fun updatePlayersRanking(tournament: TournamentBO) {
