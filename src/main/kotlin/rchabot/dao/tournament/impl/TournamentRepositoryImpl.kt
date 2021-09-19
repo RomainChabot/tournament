@@ -9,6 +9,9 @@ import rchabot.model.Player
 import rchabot.model.Tournament
 
 class TournamentRepositoryImpl(private val collection: CoroutineCollection<Tournament>) : TournamentRepository {
+    override suspend fun findAll(): Collection<Tournament> {
+        return collection.find().toList()
+    }
 
     override suspend fun create(tournament: Tournament): Tournament {
         collection.insertOne(tournament)

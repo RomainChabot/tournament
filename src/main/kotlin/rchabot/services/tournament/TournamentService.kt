@@ -7,6 +7,9 @@ import rchabot.services.tournament.bo.TournamentBO
 
 interface TournamentService {
 
+    // TODO Pagination
+    suspend fun findAll(): Collection<TournamentBO>
+
     suspend fun create(name: String): Result4k<TournamentBO, Error>
 
     suspend fun findById(tournamentId: ObjectId): TournamentBO

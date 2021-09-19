@@ -6,6 +6,8 @@ import rchabot.model.Tournament
 
 interface TournamentRepository {
 
+    suspend fun findAll(): Collection<Tournament>
+
     suspend fun create(tournament: Tournament): Tournament
 
     suspend fun findById(id: ObjectId): Tournament

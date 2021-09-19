@@ -22,6 +22,10 @@ class TournamentServiceImpl(
     private val playerMapper: PlayerMapper,
 ) : TournamentService {
 
+    override suspend fun findAll(): Collection<TournamentBO> {
+        return tournamentRepository.findAll().map(tournamentMapper::toBO)
+    }
+
     override suspend fun create(name: String): Result4k<TournamentBO, Error> {
         if (tournamentRepository.existsByName(name)) {
             return Failure(Error("Tournament with name $name already exists"))

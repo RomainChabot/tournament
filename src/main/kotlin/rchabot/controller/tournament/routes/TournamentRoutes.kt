@@ -16,11 +16,17 @@ fun Application.tournamentRoutes(parent: Route) {
 
     val tournamentController: TournamentController by inject()
 
+    fun Route.findAllTournament() {
+        get("") {
+            call.respond(tournamentController.findAll())
+        }
+    }
+
     fun Route.createTournament() {
         post("") {
             call.request.queryParameters["name"]?.let {
                 when (val result = tournamentController.create(it)) {
-                    is Failure -> call.respond(HttpStatusCode.OK, result.reason.message!!)
+                    is Failure -> call.respond(HttpStatusCode.BadRequest, result.reason.message!!)
                     is Success -> call.respond(HttpStatusCode.Created, result.get())
                 }
             } ?: call.respond(HttpStatusCode.BadRequest, """"name" query parameter is missing""")
@@ -38,7 +44,7 @@ fun Application.tournamentRoutes(parent: Route) {
         delete("{id}") {
             val tournamentId = call.parameters["id"].toString()
             tournamentController.delete(tournamentId)
-            call.respond(HttpStatusCode.OK, """Tournament $tournamentId deleted""")
+            call.respond(HttpStatusCode.OK)
         }
     }
 
@@ -49,12 +55,12 @@ fun Application.tournamentRoutes(parent: Route) {
         }
     }
 
-    fun Route.addTournamentPlayer() {
+    fun Route.registerTournamentPlayer() {
         post("") {
             val tournamentId = call.parameters["id"].toString()
             call.request.queryParameters["playerName"]?.let {
                 when (val result = tournamentController.addPlayer(tournamentId, it)) {
-                    is Failure -> call.respond(HttpStatusCode.OK, result.reason.message!!)
+                    is Failure -> call.respond(HttpStatusCode.BadRequest, result.reason.message!!)
                     is Success -> call.respond(result.get())
                 }
             } ?: call.respond(HttpStatusCode.BadRequest, """"playerName" query parameter is missing""")
@@ -63,7 +69,7 @@ fun Application.tournamentRoutes(parent: Route) {
     }
 
     fun Route.updateTournamentPlayerScore() {
-        post("{playerName}/scores") {
+        put("{playerName}/scores") {
             val tournamentId = call.parameters["id"].toString()
             val playerName = call.parameters["playerName"].toString()
             call.request.queryParameters["score"]?.let {
@@ -97,12 +103,13 @@ fun Application.tournamentRoutes(parent: Route) {
     }
 
     parent.route("tournament") {
+        findAllTournament()
         createTournament()
         readTournament()
         getTournamentLeaderboard()
         deleteTournament()
         route("{id}/players") {
-            addTournamentPlayer()
+            registerTournamentPlayer()
             updateTournamentPlayerScore()
             getTournamentPlayer()
             deleteTournamentPlayers()

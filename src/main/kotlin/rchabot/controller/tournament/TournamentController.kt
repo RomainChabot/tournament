@@ -18,6 +18,10 @@ data class TournamentController(
     private val playerMapper: PlayerResourceMapper,
 ) {
 
+    suspend fun findAll(): Collection<TournamentResource> {
+        return tournamentService.findAll().map(tournamentMapper::toResource)
+    }
+
     suspend fun create(name: String): Result4k<TournamentResource, Error> {
         return tournamentService.create(name).map(tournamentMapper::toResource)
     }

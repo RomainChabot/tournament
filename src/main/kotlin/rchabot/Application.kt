@@ -2,10 +2,7 @@ package rchabot
 
 import io.ktor.application.*
 import io.ktor.config.*
-import rchabot.plugins.configureKoin
-import rchabot.plugins.configureRouting
-import rchabot.plugins.configureSerialization
-import rchabot.plugins.configureStatusPages
+import rchabot.plugins.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -17,6 +14,7 @@ fun Application.module() {
     configureRouting()
     configureSerialization()
     configureStatusPages()
+    configureCors()
 
 }
 
