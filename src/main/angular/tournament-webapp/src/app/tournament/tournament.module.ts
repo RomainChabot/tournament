@@ -8,6 +8,7 @@ import {DialogModule} from "primeng/dialog";
 import {FormsModule} from "@angular/forms";
 import {InputTextModule} from "primeng/inputtext";
 import {ToolbarModule} from "primeng/toolbar";
+import {ProgressBarModule} from "primeng/progressbar";
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {ToolbarModule} from "primeng/toolbar";
     DialogModule,
     FormsModule,
     InputTextModule,
-    ToolbarModule
+    ToolbarModule,
+    ProgressBarModule
   ]
 })
 export class TournamentModule {

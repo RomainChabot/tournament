@@ -8,7 +8,7 @@ import rchabot.controller.player.mapper.PlayerResourceMapper
 import rchabot.controller.player.resource.PlayerResource
 import rchabot.controller.tournament.mapper.TournamentResourceMapper
 import rchabot.controller.tournament.resource.TournamentResource
-import rchabot.services.player.bo.PlayerBO
+import rchabot.model.Tournament
 import rchabot.services.tournament.TournamentService
 
 
@@ -32,6 +32,10 @@ data class TournamentController(
         }
     }
 
+    suspend fun getLeaderboard(tournamentId: String): List<PlayerResource> {
+        return tournamentService.getLeaderboard(ObjectId(tournamentId)).map(playerMapper::toResource)
+    }
+
     suspend fun delete(tournamentId: String) {
         tournamentService.delete(ObjectId(tournamentId))
     }
@@ -42,23 +46,21 @@ data class TournamentController(
         }
     }
 
-    suspend fun addPlayer(tournamentId: String, playerName: String): Result4k<TournamentResource, Error> {
+    suspend fun registerPlayer(tournamentId: String, playerName: String): Result4k<List<PlayerResource>, Error> {
         return tournamentService.registerPlayer(
             ObjectId(tournamentId),
-            PlayerBO(playerName, 0, null)
-        ).map(tournamentMapper::toResource)
+            playerName
+        ).map(playerMapper::toResources)
     }
 
     suspend fun updatePlayerPoints(
         tournamentId: String,
         playerResource: PlayerResource
-    ): TournamentResource {
-        return tournamentMapper mapResource {
-            tournamentService.updatePlayerScore(
-                ObjectId(tournamentId),
-                playerMapper.toBO(playerResource)
-            )
-        }
+    ): List<PlayerResource> {
+        return tournamentService.updatePlayerScore(
+            ObjectId(tournamentId),
+            playerMapper.toBO(playerResource)
+        ).map(playerMapper::toResource)
     }
 
     suspend fun getPlayer(tournamentId: String, playerName: String): PlayerResource {

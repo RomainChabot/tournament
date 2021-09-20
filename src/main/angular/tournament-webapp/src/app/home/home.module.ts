@@ -8,6 +8,7 @@ import {DialogModule} from "primeng/dialog";
 import {FormsModule} from "@angular/forms";
 import {InputTextModule} from "primeng/inputtext";
 import {RippleModule} from "primeng/ripple";
+import {ProgressBarModule} from "primeng/progressbar";
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import {RippleModule} from "primeng/ripple";
     FormsModule,
     InputTextModule,
     RippleModule,
+    ProgressBarModule,
   ],
 })
 export class HomeModule {

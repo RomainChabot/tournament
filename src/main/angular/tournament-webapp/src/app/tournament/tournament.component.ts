@@ -14,6 +14,7 @@ export class TournamentComponent implements OnInit {
 
   tournamentId: string = ""
   tournament: Tournament = new Tournament()
+  leaderboard: Array<Player> = []
   updatePlayerScoreDialog: boolean = false
   registerPlayerDialog: boolean = false
 
@@ -31,7 +32,10 @@ export class TournamentComponent implements OnInit {
       this.tournamentId = params['id'];
 
       this.tournamentService.find(this.tournamentId).subscribe(
-        data => this.tournament = data
+        data => {
+          this.tournament = data
+          this.getLeaderboard()
+        }
       )
     });
   }
@@ -74,15 +78,29 @@ export class TournamentComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.tournamentService.deletePlayers(this.tournament._id).subscribe((data) => {
-          this.tournament = data
-        })
+        this.tournamentService.deletePlayers(this.tournament._id).subscribe((data) => this.handleSuccessDeletePlayers(data))
       }
     });
   }
 
-  private handleSuccesUpdatePlayerScore(tournament: Tournament) {
+  private getLeaderboard() {
+    this.tournamentService.getLeaderboard(this.tournamentId).subscribe(leaderboard => {
+      this.leaderboard = leaderboard
+    })
+  }
+
+  private handleSuccessDeletePlayers(tournament: Tournament) {
     this.tournament = tournament
+    this.getLeaderboard();
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Players deleted',
+      detail: 'Players successfully deleted'
+    })
+  }
+
+  private handleSuccesUpdatePlayerScore(leaderboard: Array<Player>) {
+    this.leaderboard = leaderboard
     this.updatePlayerScoreDialog = false
     this.messageService.add({
       severity: 'success',
@@ -100,8 +118,8 @@ export class TournamentComponent implements OnInit {
     this.updatePlayerScoreDialog = false
   }
 
-  private handleSuccesRegisterPlayer(tournament: Tournament) {
-    this.tournament = tournament
+  private handleSuccesRegisterPlayer(leaderboard: Array<Player>) {
+    this.leaderboard = leaderboard
     this.registerPlayerDialog = false
     this.messageService.add({
       severity: 'success',

@@ -3,8 +3,6 @@
 <p-toolbar styleClass="mb-4">
   <ng-template pTemplate="left">
     <button (click)="openNew()" class="p-button-success p-mr-2" icon="pi pi-plus" label="New" pButton pRipple></button>
-    <!--    <button (click)="deleteSelectedProducts()" [label]="Delete" class="p-button-danger" icon="pi pi-trash"-->
-    <!--            pButton pRipple></button>-->
   </ng-template>
 </p-toolbar>
 
@@ -25,7 +23,7 @@
   <ng-template let-tournament pTemplate="body">
     <tr [pSelectableRow]="tournament">
       <td>{{tournament.name}}</td>
-      <td>{{tournament.players.length}}</td>
+      <td>{{tournament.nbPlayers}}</td>
       <td>
         <button (click)="deleteTournament(tournament)" class="p-button-rounded p-button-danger" icon="pi pi-trash"
                 pButton

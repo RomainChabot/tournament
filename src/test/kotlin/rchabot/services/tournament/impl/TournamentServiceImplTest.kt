@@ -187,6 +187,28 @@ class TournamentServiceImplTest {
     }
 
     @Nested
+    inner class GetLeaderboard {
+
+        @Test
+        fun `should return tournament leaderboard`() = runBlocking {
+            // Arrange
+            val tournamentId = ObjectId()
+            val leaderboard = listOf<PlayerBO>(PlayerBO(""))
+            val tournament = TournamentBO(_id = null, name = "", players = leaderboard)
+
+            // Mock
+            coEvery { service.findById(tournamentId) } returns tournament
+
+            // Act
+            val result = service.getLeaderboard(tournamentId)
+
+            // Assert
+            assertSame(leaderboard, result)
+        }
+
+    }
+
+    @Nested
     inner class RegisterPlayer {
 
         @Test
@@ -203,7 +225,7 @@ class TournamentServiceImplTest {
             every { tournamentBO.existsPlayer(playerName) } returns true
 
             // Act
-            val result = service.registerPlayer(tournamentId, playerBO)
+            val result = service.registerPlayer(tournamentId, playerName)
 
             // Assert
             assertTrue { result is Failure }
@@ -218,7 +240,7 @@ class TournamentServiceImplTest {
             val playerName = "playerName"
             val tournamentId = ObjectId()
             val tournamentBO = mockk<TournamentBO>()
-            val updatedTournamentBO = mockk<TournamentBO>()
+            val updatedLeaderboard = mockk<List<PlayerBO>>()
             val player = Player(playerName)
             val playerBO = PlayerBO(playerName)
 
@@ -227,15 +249,15 @@ class TournamentServiceImplTest {
             every { tournamentBO.existsPlayer(playerName) } returns false
             every { playerMapper.toModel(playerBO) } returns player
             coJustRun { tournamentRepository.registerPlayer(tournamentId, player) }
-            coEvery { service.updatePlayerScore(tournamentId, playerBO) } returns updatedTournamentBO
+            coEvery { service.updatePlayerScore(tournamentId, playerBO) } returns updatedLeaderboard
 
             // Act
-            val result = service.registerPlayer(tournamentId, playerBO)
+            val result = service.registerPlayer(tournamentId, playerName)
 
             // Assert
             coVerify { tournamentRepository.registerPlayer(tournamentId, player) }
             assertTrue { result is Success }
-            assertSame(updatedTournamentBO, result.get())
+            assertSame(updatedLeaderboard, result.get())
 
         }
 
@@ -257,7 +279,8 @@ class TournamentServiceImplTest {
             val savedTournamentCaptor = slot<TournamentBO>()
             val tournamentToSave = Tournament(name = "")
             val savedTournament = Tournament(name = "")
-            val savedTournamentBO = TournamentBO(name = "")
+            val leaderboard = listOf(PlayerBO(""))
+            val savedTournamentBO = TournamentBO(_id = null, name = "", players = leaderboard)
 
             // Mock
             coEvery { service.findById(tournamentId) } returns tournamentBO
@@ -269,7 +292,7 @@ class TournamentServiceImplTest {
             val result = service.updatePlayerScore(tournamentId, testData.updatePlayer)
 
             // Assert
-            assertSame(savedTournamentBO, result)
+            assertSame(leaderboard, result)
             assertEquals(testData.expectedLeaderboard, savedTournamentCaptor.captured.players)
 
         }
@@ -342,7 +365,8 @@ class TournamentServiceImplTest {
             val savedTournamentCaptor = slot<TournamentBO>()
             val tournamentToSave = Tournament(name = "")
             val savedTournament = Tournament(name = "")
-            val savedTournamentBO = TournamentBO(name = "")
+            val leaderboard = listOf(PlayerBO(""))
+            val savedTournamentBO = TournamentBO(_id = null, name = "", players = leaderboard)
 
             // Mock
             coEvery { service.findById(tournamentId) } returns tournamentBO
@@ -354,7 +378,7 @@ class TournamentServiceImplTest {
             val result = service.updatePlayerScore(tournamentId, testData.updatePlayer)
 
             // Assert
-            assertSame(savedTournamentBO, result)
+            assertSame(leaderboard, result)
             assertEquals(testData.expectedLeaderboard.toSet(), savedTournamentCaptor.captured.players.toSet())
 
         }

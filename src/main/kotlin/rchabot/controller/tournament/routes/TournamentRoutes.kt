@@ -51,7 +51,7 @@ fun Application.tournamentRoutes(parent: Route) {
     fun Route.getTournamentLeaderboard() {
         get("{id}/leaderboard") {
             val tournamentId = call.parameters["id"].toString()
-            call.respond(tournamentController.read(tournamentId).players)
+            call.respond(tournamentController.getLeaderboard(tournamentId))
         }
     }
 

@@ -6,7 +6,8 @@ import rchabot.common.annotation.Default
 data class Tournament @Default constructor(
     val _id: ObjectId?,
     val name: String,
-    val players: List<Player> = listOf()
+    var players: List<Player> = listOf(),
+    var nbPlayers: Int = 0
 ) {
 
     constructor(name: String) : this(_id = null, name = name)

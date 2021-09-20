@@ -7,8 +7,7 @@ import rchabot.services.tournament.bo.TournamentBO
 
 interface TournamentService {
 
-    // TODO Pagination
-    suspend fun findAll(): Collection<TournamentBO>
+    suspend fun findAll(pageRequest: PageRequest): Page<TournamentBO>
 
     suspend fun create(name: String): Result4k<TournamentBO, Error>
 
@@ -16,9 +15,11 @@ interface TournamentService {
 
     suspend fun delete(tournamentId: ObjectId)
 
-    suspend fun registerPlayer(tournamentId: ObjectId, player: PlayerBO): Result4k<TournamentBO, Error>
+    suspend fun getLeaderboard(tournamentId: ObjectId): List<PlayerBO>
 
-    suspend fun updatePlayerScore(tournamentId: ObjectId, player: PlayerBO): TournamentBO
+    suspend fun registerPlayer(tournamentId: ObjectId, playerName: String): Result4k<List<PlayerBO>, Error>
+
+    suspend fun updatePlayerScore(tournamentId: ObjectId, player: PlayerBO): List<PlayerBO>
 
     suspend fun findPlayer(tournamentId: ObjectId, playerName: String): PlayerBO
 

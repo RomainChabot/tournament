@@ -22,6 +22,10 @@ export class TournamentService {
     return this.http.get<Tournament>(`${this.baseUrl}/tournament/${id}`)
   }
 
+  getLeaderboard(id: string): Observable<Array<Player>> {
+    return this.http.get<Array<Player>>(`${this.baseUrl}/tournament/${id}/leaderboard`)
+  }
+
   create(name: string): Observable<Tournament> {
     const params = new HttpParams()
       .set("name", name)
@@ -36,20 +40,20 @@ export class TournamentService {
     return this.http.delete(`${this.baseUrl}/tournament/${tournamentId}`)
   }
 
-  registerPlayer(tournamentId: string, player: Player) {
+  registerPlayer(tournamentId: string, player: Player): Observable<Array<Player>> {
     const params = new HttpParams()
       .set("playerName", player.playerName)
-    return this.http.post<Tournament>(
+    return this.http.post<Array<Player>>(
       `${this.baseUrl}/tournament/${tournamentId}/players`,
       {},
       {params: params}
     )
   }
 
-  updatePlayerScore(tournamentId: string, player: Player) {
+  updatePlayerScore(tournamentId: string, player: Player): Observable<Array<Player>> {
     const params = new HttpParams()
       .set("score", player.score)
-    return this.http.put<Tournament>(
+    return this.http.put<Array<Player>>(
       `${this.baseUrl}/tournament/${tournamentId}/players/${player.playerName}/scores`,
       {},
       {params: params}

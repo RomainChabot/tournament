@@ -44,29 +44,34 @@ class TournamentServiceImpl(
         tournamentRepository.delete(tournamentId)
     }
 
-    override suspend fun registerPlayer(tournamentId: ObjectId, player: PlayerBO): Result4k<TournamentBO, Error> {
+    override suspend fun getLeaderboard(tournamentId: ObjectId): List<PlayerBO> {
+        return findById(tournamentId).players
+    }
+
+    override suspend fun registerPlayer(tournamentId: ObjectId, playerName: String): Result4k<List<PlayerBO>, Error> {
         val tournament = this.findById(tournamentId)
-        if (tournament.existsPlayer(player.playerName)) {
-            return Failure(Error("Player ${player.playerName} is already registered"))
+        if (tournament.existsPlayer(playerName)) {
+            return Failure(Error("Player $playerName is already registered"))
         }
+        val player = PlayerBO(playerName = playerName, score = 0, ranking = null)
         tournamentRepository.registerPlayer(tournamentId, playerMapper.toModel(player))
         return Success(this.updatePlayerScore(tournamentId, player))
     }
 
-    override suspend fun updatePlayerScore(tournamentId: ObjectId, player: PlayerBO): TournamentBO {
+    override suspend fun updatePlayerScore(tournamentId: ObjectId, player: PlayerBO): List<PlayerBO> {
         val tournament = this.findById(tournamentId)
         tournament.findPlayer(player.playerName)?.let {
             it.score = player.score
             updatePlayersRanking(tournament)
-            return tournamentMapper.mapAround(tournamentRepository::update, tournament)
+            return tournamentMapper.mapAround(tournamentRepository::update, tournament).players
         } ?: throw NotFoundException("Player ${player.playerName} is not registered to tournament $tournamentId")
     }
 
     private fun updatePlayersRanking(tournament: TournamentBO) {
-        val updated = tournament.players.sortedBy(PlayerBO::score)
+        val leaderboard = tournament.players.sortedBy(PlayerBO::score)
         val playersByScore = tournament.players.groupBy(PlayerBO::score).toSortedMap(compareByDescending { it })
         playersByScore.values.forEachIndexed { index, list -> list.forEach { it.ranking = index + 1 } }
-        tournament.players = updated.reversed()
+        tournament.players = leaderboard.reversed()
     }
 
     override suspend fun findPlayer(tournamentId: ObjectId, playerName: String): PlayerBO {

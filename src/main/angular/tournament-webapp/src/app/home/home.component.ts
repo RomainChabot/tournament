@@ -15,6 +15,10 @@ export class HomeComponent implements OnInit {
   tournament: Tournament = new Tournament();
   tournamentDialog: boolean = false;
 
+  loading: boolean = false
+  totalRecords: number = 0;
+  visible: boolean = true
+
   constructor(private tournamentService: TournamentService,
               private messageService: MessageService,
               private router: Router,
@@ -22,10 +26,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tournamentService.findAll()
-      .subscribe(data => {
-        this.tournaments = data
-      })
+    this.loading = true;
   }
 
   openNew() {
@@ -60,12 +61,10 @@ export class HomeComponent implements OnInit {
   }
 
   private handleSuccesOnTournamentDelete(tournament: Tournament) {
-
-    this.tournaments.push(tournament)
     this.messageService.add({
       severity: 'success',
-      summary: 'Tournament successfully created',
-      detail: `Tournament ${tournament.name} created`
+      summary: 'Tournament successfully deleted',
+      detail: `Tournament ${tournament.name} deleted`
     })
     this.tournamentDialog = false
 

@@ -10,10 +10,10 @@ class TournamentResourceMapperImpl(private val playerMapper: PlayerResourceMappe
 
     override fun toResource(bo: TournamentBO): TournamentResource {
 
-        return TournamentResource(bo._id.toString(), bo.name, bo.players.map(playerMapper::toResource))
+        return TournamentResource(bo._id.toString(), bo.name, bo.players.size)
     }
 
     override fun toBO(resource: TournamentResource): TournamentBO {
-        return TournamentBO(ObjectId(resource._id), resource.name, resource.players.map(playerMapper::toBO))
+        return TournamentBO(ObjectId(resource._id), resource.name)
     }
 }
