@@ -56,7 +56,7 @@ class TournamentServiceImplTest {
     inner class FindAll {
 
         @Test
-        fun `should page of tournaments`() = runBlocking {
+        fun `should return page of tournaments`() = runBlocking {
 
             // Arrange
             val tournament1 = Tournament("tournament1")
