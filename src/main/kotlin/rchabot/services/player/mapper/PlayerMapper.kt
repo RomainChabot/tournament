@@ -6,6 +6,4 @@ import rchabot.services.common.mapper.ModelMapper
 import rchabot.services.player.bo.PlayerBO
 
 @Mapper
-interface PlayerMapper : ModelMapper<Player, PlayerBO> {
-
-}
+interface PlayerMapper : ModelMapper<Player, PlayerBO>

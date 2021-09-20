@@ -7,6 +7,5 @@ class TournamentResource @Default constructor(
     val name: String,
     val nbPlayers: Int = 0
 ) {
-
     constructor(name: String) : this(_id = null, name = name)
 }
