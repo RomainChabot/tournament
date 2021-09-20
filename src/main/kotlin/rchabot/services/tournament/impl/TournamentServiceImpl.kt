@@ -4,8 +4,10 @@ import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.Success
 import dev.forkhandles.result4k.map
+import io.ktor.features.*
 import org.bson.types.ObjectId
-import rchabot.common.exception.NotFoundException
+import rchabot.common.page.Page
+import rchabot.common.page.PageRequest
 import rchabot.dao.tournament.TournamentRepository
 import rchabot.model.Tournament
 import rchabot.services.common.mapper.mapAround
@@ -22,8 +24,8 @@ class TournamentServiceImpl(
     private val playerMapper: PlayerMapper,
 ) : TournamentService {
 
-    override suspend fun findAll(): Collection<TournamentBO> {
-        return tournamentRepository.findAll().map(tournamentMapper::toBO)
+    override suspend fun findAll(pageRequest: PageRequest): Page<TournamentBO> {
+        return tournamentRepository.findAll(pageRequest).map(tournamentMapper::toBO)
     }
 
     override suspend fun create(name: String): Result4k<TournamentBO, Error> {

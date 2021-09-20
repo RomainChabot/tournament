@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TournamentService} from "../shared/service/tournament.service";
 import {Tournament} from "../shared/model/tournament.model";
-import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmationService, LazyLoadEvent, MessageService} from "primeng/api";
 import {Router} from "@angular/router";
 
 @Component({
@@ -60,6 +60,22 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  onLazyLoad(event: LazyLoadEvent) {
+    this.loading = true
+    const first = event.first ? event.first : 0
+    const rows = event.rows ? event.rows : 0
+    const nextPageNumber = first / rows
+    setTimeout(() => {
+      this.tournamentService.findAll(nextPageNumber, rows)
+        .subscribe(data => {
+          this.tournaments = data.content
+          this.totalRecords = data.totalRecords
+          this.loading = false
+        })
+    }, 500)
+
+  }
+
   private handleSuccesOnTournamentDelete(tournament: Tournament) {
     this.messageService.add({
       severity: 'success',
@@ -67,19 +83,19 @@ export class HomeComponent implements OnInit {
       detail: `Tournament ${tournament.name} deleted`
     })
     this.tournamentDialog = false
+    this.refreshTable();
 
   }
 
   private handleSuccesOnTournamentCreate(tournament: Tournament) {
 
-    this.tournaments.push(tournament)
     this.messageService.add({
       severity: 'success',
       summary: 'Tournament successfully created',
       detail: `Tournament ${tournament.name} created`
     })
     this.tournamentDialog = false
-
+    this.refreshTable();
   }
 
   private handleErrorOnTournamentCreate(error: any) {
@@ -89,5 +105,10 @@ export class HomeComponent implements OnInit {
       detail: error.error
     })
     this.tournamentDialog = false
+  }
+
+  private refreshTable() {
+    this.visible = false
+    setTimeout(() => (this.visible = true), 0)
   }
 }

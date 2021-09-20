@@ -3,6 +3,8 @@ package rchabot.controller.tournament
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.map
 import org.bson.types.ObjectId
+import rchabot.common.page.Page
+import rchabot.common.page.PageRequest
 import rchabot.controller.common.mapper.mapResource
 import rchabot.controller.player.mapper.PlayerResourceMapper
 import rchabot.controller.player.resource.PlayerResource
@@ -18,8 +20,9 @@ data class TournamentController(
     private val playerMapper: PlayerResourceMapper,
 ) {
 
-    suspend fun findAll(): Collection<TournamentResource> {
-        return tournamentService.findAll().map(tournamentMapper::toResource)
+    suspend fun findAll(page: Int, size: Int): Page<TournamentResource> {
+        return tournamentService.findAll(PageRequest(page, size, Tournament::_id))
+            .map(tournamentMapper::toResource)
     }
 
     suspend fun create(name: String): Result4k<TournamentResource, Error> {

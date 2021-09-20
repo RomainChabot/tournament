@@ -3,6 +3,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Tournament} from "../model/tournament.model";
 import {Player} from "../model/player.model";
+import {Page} from "../model/page.model";
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,11 @@ export class TournamentService {
   constructor(private http: HttpClient) {
   }
 
-  findAll(): Observable<Array<Tournament>> {
-    return this.http.get<Array<Tournament>>(`${this.baseUrl}/tournament`)
+  findAll(page: number, size: number): Observable<Page<Tournament>> {
+    const params = new HttpParams()
+      .set("page", page)
+      .set("size", size)
+    return this.http.get<Page<Tournament>>(`${this.baseUrl}/tournament`, {params: params})
   }
 
   find(id: string): Observable<Tournament> {

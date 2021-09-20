@@ -1,16 +1,24 @@
 package rchabot.dao.tournament.impl
 
+import io.ktor.features.*
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.CoroutineCollection
-import rchabot.common.exception.NotFoundException
+import rchabot.common.page.Page
+import rchabot.common.page.PageRequest
 import rchabot.dao.tournament.TournamentRepository
 import rchabot.model.Player
 import rchabot.model.Tournament
 
 class TournamentRepositoryImpl(private val collection: CoroutineCollection<Tournament>) : TournamentRepository {
-    override suspend fun findAll(): Collection<Tournament> {
-        return collection.find().toList()
+    override suspend fun findAll(pageRequest: PageRequest): Page<Tournament> {
+        val tournaments: List<Tournament> =
+            collection.find().skip(pageRequest.numberToSkip()).limit(pageRequest.size).sort(ascending(pageRequest.sort))
+                .toList()
+
+        val totalRecords = collection.countDocuments()
+
+        return Page(tournaments, totalRecords, pageRequest)
     }
 
     override suspend fun create(tournament: Tournament): Tournament {

@@ -1,12 +1,14 @@
 package rchabot.dao.tournament
 
 import org.bson.types.ObjectId
+import rchabot.common.page.Page
+import rchabot.common.page.PageRequest
 import rchabot.model.Player
 import rchabot.model.Tournament
 
 interface TournamentRepository {
 
-    suspend fun findAll(): Collection<Tournament>
+    suspend fun findAll(pageRequest: PageRequest): Page<Tournament>
 
     suspend fun create(tournament: Tournament): Tournament
 

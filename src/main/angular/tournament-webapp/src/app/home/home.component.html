@@ -6,10 +6,15 @@
   </ng-template>
 </p-toolbar>
 
-<p-table (onRowSelect)="selectTournament()"
+<p-table (onLazyLoad)="onLazyLoad($event)"
+         (onRowSelect)="selectTournament()"
+         *ngIf="visible"
          [(selection)]="tournament"
+         [lazy]="true"
+         [loading]="loading"
          [paginator]="true"
-         [rows]="10"
+         [rows]="5"
+         [totalRecords]="totalRecords"
          [value]="tournaments"
          responsiveLayout="scroll"
          selectionMode="single">
@@ -31,13 +36,16 @@
       </td>
     </tr>
   </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <p>No tournament in the database</p>
+  </ng-template>
 </p-table>
 
 <p-dialog [(visible)]="tournamentDialog" [modal]="true" [style]="{width: '450px'}" header="Tournament Details"
           styleClass="p-fluid">
   <ng-template pTemplate="content">
     <div class="p-field">
-      <div class="mb-2" for="name">Name</div>
+      <div class="mb-2">Name</div>
       <input [(ngModel)]="tournament.name" autofocus id="name" pInputText required type="text"/>
     </div>
   </ng-template>

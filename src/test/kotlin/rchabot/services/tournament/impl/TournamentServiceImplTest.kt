@@ -4,6 +4,7 @@ import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Success
 import dev.forkhandles.result4k.failureOrNull
 import dev.forkhandles.result4k.get
+import io.ktor.features.*
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -16,7 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import rchabot.common.exception.NotFoundException
+import rchabot.common.page.Page
+import rchabot.common.page.PageRequest
 import rchabot.dao.tournament.TournamentRepository
 import rchabot.model.Player
 import rchabot.model.Tournament
@@ -54,7 +56,7 @@ class TournamentServiceImplTest {
     inner class FindAll {
 
         @Test
-        fun `should return all tournaments`() = runBlocking {
+        fun `should page of tournaments`() = runBlocking {
 
             // Arrange
             val tournament1 = Tournament("tournament1")
@@ -62,41 +64,25 @@ class TournamentServiceImplTest {
 
             val tournamentBO1 = TournamentBO("tournament1")
             val tournamentBO2 = TournamentBO("tournament2")
+            val pageRequest = PageRequest(1, 5, Tournament::_id)
+            val totalRecords: Long = 50
+            val page = Page(listOf(tournament1, tournament2), totalRecords, pageRequest)
 
             // Mock
-            coEvery { tournamentRepository.findAll() } returns listOf(tournament1, tournament2)
+            coEvery {
+                tournamentRepository.findAll(pageRequest)
+            } returns page
             every { tournamentMapper.toBO(tournament1) } returns tournamentBO1
             every { tournamentMapper.toBO(tournament2) } returns tournamentBO2
 
             // Act
-            val result = service.findAll()
+            val result = service.findAll(pageRequest)
 
             // Assert
-            assertEquals(listOf(tournamentBO1, tournamentBO2), result)
+            assertEquals(Page(listOf(tournamentBO1, tournamentBO2), totalRecords, pageRequest), result)
 
         }
 
-        @Test
-        fun `should return succes when tournament with name doesn't already exists`() = runBlocking {
-
-            // Arrange
-            val name = "data"
-            val createdTournament = Tournament(_id = ObjectId(), name = name)
-            val createdTournamentBO = TournamentBO(name = name)
-
-            // Mock
-            coEvery { tournamentRepository.existsByName(name) } returns false
-            coEvery { tournamentRepository.create(Tournament(name = name)) } returns createdTournament
-            coEvery { tournamentMapper.toBO(createdTournament) } returns createdTournamentBO
-
-            // Act
-            val result = service.create(name)
-
-            // Assert
-            assertTrue { result is Success }
-            assertSame(createdTournamentBO, result.get())
-
-        }
     }
 
     @Nested
@@ -218,7 +204,6 @@ class TournamentServiceImplTest {
             val playerName = "playerName"
             val tournamentId = ObjectId()
             val tournamentBO = mockk<TournamentBO>()
-            val playerBO = PlayerBO(playerName)
 
             // Mock
             coEvery { service.findById(tournamentId) } returns tournamentBO

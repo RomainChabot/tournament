@@ -13,9 +13,10 @@
   </ng-template>
 </p-toolbar>
 
-<p-table [value]="tournament.players"
-         responsiveLayout="scroll"
-         selectionMode="single">
+<p-table
+  [value]="leaderboard"
+  responsiveLayout="scroll"
+  selectionMode="single">
   <ng-template pTemplate="header">
     <tr>
       <th>Ranking</th>
@@ -35,6 +36,9 @@
       </td>
     </tr>
   </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <p>No player registered</p>
+  </ng-template>
 </p-table>
 
 <p-dialog [(visible)]="updatePlayerScoreDialog" [modal]="true" [style]="{width: '450px'}" header="Player Details"
@@ -49,7 +53,7 @@
       <div>{{player.playerName}}</div>
     </div>
     <div class="flex align-items-center">
-      <div class="label mr-3" for="score">Score</div>
+      <div class="label mr-3">Score</div>
       <input [(ngModel)]="player.score" autofocus class="score" id="score" pInputText required type="text"/>
     </div>
   </ng-template>
@@ -66,7 +70,7 @@
           styleClass="p-fluid">
   <ng-template pTemplate="content">
     <div class="p-field">
-      <div class="mb-2" for="name">Player Name</div>
+      <div class="mb-2">Player Name</div>
       <input [(ngModel)]="player.playerName" autofocus id="name" pInputText required type="text"/>
     </div>
   </ng-template>
